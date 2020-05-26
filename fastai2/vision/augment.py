@@ -189,7 +189,7 @@ mk_class('ResizeMethod', **{o:o.lower() for o in ['Squish', 'Crop', 'Pad']},
 @delegates()
 class Resize(RandTransform):
     split_idx = None
-    mode,mode_mask,order,final_size = Image.BILINEAR,Image.NEAREST,1,None
+    mode,mode_mask,order = Image.BILINEAR,Image.NEAREST,1
     "Resize image to `size` using `method`"
     def __init__(self, size, method=ResizeMethod.Crop, pad_mode=PadMode.Reflection,
                  resamples=(Image.BILINEAR, Image.NEAREST), **kwargs):
@@ -203,7 +203,6 @@ class Resize(RandTransform):
 
     def encodes(self, x:(Image.Image,TensorBBox,TensorPoint)):
         orig_sz = _get_sz(x)
-        self.final_size = self.size
         if self.method==ResizeMethod.Squish:
             return x.crop_pad(orig_sz, Tuple(0,0), orig_sz=orig_sz, pad_mode=self.pad_mode,
                    resize_mode=self.mode_mask if isinstance(x,PILMask) else self.mode, resize_to=self.size)
@@ -220,7 +219,7 @@ class Resize(RandTransform):
 @delegates()
 class RandomResizedCrop(RandTransform):
     "Picks a random scaled crop of an image and resize it to `size`"
-    split_idx = None
+    split_idx,order = None,1
     def __init__(self, size, min_scale=0.08, ratio=(3/4, 4/3), resamples=(Image.BILINEAR, Image.NEAREST),
                  val_xtra=0.14, **kwargs):
         super().__init__(**kwargs)
