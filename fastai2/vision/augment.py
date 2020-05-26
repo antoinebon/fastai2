@@ -774,7 +774,7 @@ def aug_transforms(mult=1.0, do_flip=True, flip_vert=False, max_rotate=10., min_
     if do_flip: res.append(Dihedral(p=0.5, **tkw) if flip_vert else Flip(p=0.5, **tkw))
     if max_warp:   res.append(Warp(magnitude=max_warp, p=p_affine, **tkw))
     if max_rotate: res.append(Rotate(max_deg=max_rotate, p=p_affine, **tkw))
-    if max_zoom>1 or min_zoom<1: res.append(Zoom(min_zoom=min_zoom, max_zoom=max_zoom, p=p_affine, **tkw))
+    if min_zoom<1 or max_zoom>1: res.append(Zoom(min_zoom=min_zoom, max_zoom=max_zoom, p=p_affine, **tkw))
     if max_lighting:
         res.append(Brightness(max_lighting=max_lighting, p=p_lighting, batch=batch))
         res.append(Contrast(max_lighting=max_lighting, p=p_lighting, batch=batch))
